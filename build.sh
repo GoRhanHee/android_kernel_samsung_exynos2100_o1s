@@ -18,5 +18,6 @@ export ANDROID_MAJOR_VERSION=r
 export SEC_BUILD_CONF_VENDOR_BUILD_OS=13
 
 # Cooking Kernel Source
-make ARCH=arm64 -j16 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
-make ARCH=arm64 -j16 || exit 1
+mkdir out
+make ARCH=arm64 O=out -j16 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+make ARCH=arm64 O=out -j16 || exit 1
