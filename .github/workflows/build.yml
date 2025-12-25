@@ -1,0 +1,42 @@
+name: Samsung Galaxy S21 5G Kernel Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: Import Kernel Source
+      uses: actions/checkout@v4   
+      
+    - name: Install Required Package
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential bc bison flex libssl-dev make libncurses5-dev git curl clang lld \
+        libelf-dev erofs-utils android-sdk-libsparse-utils build-essential automake autoconf libtool pkg-config fuse3 e2fsprogs pv liblz4-dev uuid-dev \
+        libfuse3-dev fuse3 f2fs-tools fuse2fs attr zlib1g-dev rsync \
+        device-tree-compiler lz4 xz-utils zlib1g-dev openjdk-17-jdk gcc g++ python3 python-is-python3 p7zip-full
+
+    - name: Setting Scripts Permission
+      run: |    
+        chmod +x build.sh         
+
+    - name: Kernel Build
+      run: |   
+        ./build.sh
+
+    - name: Upload Artifacts Image File
+      uses: actions/upload-artifact@v4
+      with:
+        name: "S21_Kernel_Image_File"
+        path: |
+          ./out/arch/arm64/boot/*
+
+    - name: Upload Artifacts Kernel OutPut File
+      uses: actions/upload-artifact@v4
+      with:
+        name: "S21_Kernel_OUTPUT_File"
+        path: |
+          ./out/*
