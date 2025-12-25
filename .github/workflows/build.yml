@@ -27,9 +27,16 @@ jobs:
       run: |   
         ./build.sh
 
-    - name: Upload Artifacts Flashable File
+    - name: Upload Artifacts Image File
       uses: actions/upload-artifact@v4
       with:
-        name: "S21_Kernel_File"
+        name: "S21_Kernel_Image_File"
+        path: |
+          ./out/arch/arm64/boot/*
+
+    - name: Upload Artifacts Kernel OutPut File
+      uses: actions/upload-artifact@v4
+      with:
+        name: "S21_Kernel_OUTPUT_File"
         path: |
           ./out/*
