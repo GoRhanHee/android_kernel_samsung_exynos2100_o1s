@@ -17,6 +17,11 @@ export PLATFORM_VERSION=11
 export ANDROID_MAJOR_VERSION=r
 export SEC_BUILD_CONF_VENDOR_BUILD_OS=13
 
+# Setting toolchain path
+CLANG_DIR=$(pwd)/toolchain/clang/host/linux-x86/clang-r383902
+GCC_DIR=$(pwd)/toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+PATH=$CLANG_DIR/bin:$CLANG_DIR/lib:$GCC_DIR/bin:$GCC_DIR/lib:$PATH
+
 # Cooking Kernel Source
 mkdir out
 
@@ -24,6 +29,8 @@ MAKE_ARGS="
 LLVM=1 \
 LLVM_IAS=1 \
 ARCH=arm64 \
+READELF=${CLANG_DIR}/bin/llvm-readelf \
+CROSS_COMPILE=${GCC_DIR}/bin/aarch64-linux-gnu- \
 O=out
 "
 
