@@ -19,5 +19,13 @@ export SEC_BUILD_CONF_VENDOR_BUILD_OS=13
 
 # Cooking Kernel Source
 mkdir out
-make ARCH=arm64 O=out -j16 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
-make ARCH=arm64 O=out -j16 || exit 1
+
+MAKE_ARGS="
+LLVM=1 \
+LLVM_IAS=1 \
+ARCH=arm64 \
+O=out
+"
+
+make ${MAKE_ARGS} -j16 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+make ${MAKE_ARGS} -j16 || exit 1
