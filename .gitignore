@@ -1,3 +1,5 @@
 *.patch
 *.rej
 *.orig
+out/
+toolchain/
