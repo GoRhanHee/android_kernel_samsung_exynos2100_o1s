@@ -1,0 +1,41 @@
+{
+  "info" : {
+    "input" : "/home/test1/exynos2100/prebuilts/vendor_boot/vendor_boot.img",
+    "role" : "vendor_boot.img",
+    "json" : "vendor_boot.json",
+    "headerVersion" : 3,
+    "product" : "SRPTI16A011KU",
+    "headerSize" : 2112,
+    "pageSize" : 4096,
+    "cmdline" : "androidboot.selinux=permissive loop.max_part=7",
+    "tagsLoadAddr" : 2147483648,
+    "kernelLoadAddr" : 2147516416,
+    "imageSize" : 67108864
+  },
+  "ramdisk" : {
+    "file" : "build/unzip_boot/ramdisk.img.gz",
+    "position" : 4096,
+    "size" : 11224155,
+    "loadAddr" : 2214592512,
+    "xzFlags" : null
+  },
+  "dtb" : {
+    "file" : "build/unzip_boot/dtb",
+    "position" : 11231232,
+    "size" : 389940,
+    "loadAddr" : 2179989504,
+    "dtbList" : [ ]
+  },
+  "ramdisk_table" : {
+    "size" : 0,
+    "eachEntrySize" : 0,
+    "position" : 0,
+    "ramdidks" : [ ]
+  },
+  "bootconfig" : {
+    "file" : "",
+    "position" : 0,
+    "size" : 0,
+    "loadAddr" : 0
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "info" : {
+    "input" : "/home/test1/exynos2100/prebuilts/boot/boot.img",
+    "role" : "boot.img",
+    "json" : "boot.json",
+    "headerVersion" : 3,
+    "headerSize" : 1580,
+    "pageSize" : 4096,
+    "cmdline" : "androidboot.selinux=permissive loop.max_part=7",
+    "osVersion" : "11.0.0",
+    "osPatchLevel" : "2025-11-00",
+    "imageSize" : 67108864,
+    "signatureSize" : 0
+  },
+  "kernel" : {
+    "file" : "build/unzip_boot/kernel",
+    "position" : 4096,
+    "size" : 29471232
+  },
+  "ramdisk" : {
+    "file" : "build/unzip_boot/ramdisk.img.gz",
+    "position" : 29478912,
+    "size" : 701560,
+    "xzFlags" : null
+  },
+  "bootSignature" : {
+    "file" : "",
+    "position" : 0,
+    "size" : 0
+  }
+}
