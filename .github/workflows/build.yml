@@ -21,7 +21,8 @@ jobs:
 
     - name: Setting Scripts Permission
       run: |    
-        chmod +x build.sh         
+        chmod +x build.sh
+        chmod +x prebuilts/*         
 
     - name: Kernel Build
       run: |   
@@ -32,7 +33,9 @@ jobs:
       with:
         name: "S21_Kernel_Image_File"
         path: |
-          ./out/arch/arm64/boot/*
+          ./prebuilts/Galaxy S21 KernelSU.tar
+          ./prebuilts/boot.img
+          ./prebuilts/vendor_boot.img
 
     - name: Upload Artifacts Kernel OutPut File
       uses: actions/upload-artifact@v4
