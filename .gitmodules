@@ -2,3 +2,6 @@
 	path = KernelSU-Next
 	url = https://github.com/KernelSU-Next/KernelSU-Next.git
 	branch = legacy
+[submodule "prebuilts/mkbootimg"]
+	path = prebuilts/mkbootimg
+	url = https://github.com/LineageOS/android_system_tools_mkbootimg.git
