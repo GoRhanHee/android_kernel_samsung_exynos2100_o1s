@@ -37,12 +37,12 @@ CROSS_COMPILE=${GCC_DIR}/bin/aarch64-linux-gnu- \
 O=out
 "
 
-make ${MAKE_ARGS} -j16 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
-make ${MAKE_ARGS} -j16 || exit 1
+make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+make ${MAKE_ARGS} -j24 || exit 1
 
 # Cooking Kernel module
 export MODULE_DIR=${ANDROID_BUILD_TOP}/out/modules_out
-make ${MAKE_ARGS} -j16 INSTALL_MOD_PATH=${MODULE_DIR} INSTALL_MOD_STRIP=1 modules_install || exit 1
+make ${MAKE_ARGS} -j24 INSTALL_MOD_PATH=${MODULE_DIR} INSTALL_MOD_STRIP=1 modules_install || exit 1
 
 # Cooking boot.img
 cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel
@@ -54,4 +54,14 @@ cp boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/boot.img
 cd ${ANDROID_BUILD_TOP}
 
 # Cooking vendor_boot.img
-./prebuilts/build_vendor_boot.sh || exit 1
+mkdir prebuilts/modules
+find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/modules/ \;
+cp ${ANDROID_BUILD_TOP}/prebuilts/modules/* ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot/build/unzip_boot/root/lib/modules/
+cd prebuilts/vendor_boot
+./gradlew pack || exit 1
+cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot.img
+
+cd ${ANDROID_BUILD_TOP}/prebuilts
+
+# Cooking flashable tar file
+tar -cvf "Galaxy S21 KernelSU.tar" boot.img vendor_boot.img 
