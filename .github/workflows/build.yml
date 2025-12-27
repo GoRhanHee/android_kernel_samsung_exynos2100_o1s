@@ -44,4 +44,5 @@ jobs:
       with:
         name: "S21_Kernel_OUTPUT_File"
         path: |
-          ./out/*
+          ./out/arch/arm64/boot/*
+          ./out/modules_out/*
