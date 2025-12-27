@@ -63,5 +63,13 @@ cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot.img
 
 cd ${ANDROID_BUILD_TOP}/prebuilts
 
+# Download fastbootD patched recovery
+RECOVERY_URL="https://github.com/GoRhanHee/android_kernel_samsung_exynos2100_o1s/releases/download/fastbootD/recovery.img"
+RECOVERY_FILE=$(basename "$RECOVERY_URL")
+TARGET_PATH=${ANDROID_BUILD_TOP}/prebuilts/$RECOVERY_FILE
+if [ ! -f "$TARGET_PATH" ]; then
+    wget -q --show-progress --progress=dot:giga -O "$TARGET_PATH" "$RECOVERY_URL"
+fi
+
 # Cooking flashable tar file
-tar -cvf "Galaxy S21 KernelSU.tar" boot.img vendor_boot.img 
+tar -cvf "Galaxy S21 KernelSU.tar" boot.img recovery.img vendor_boot.img vbmeta.img

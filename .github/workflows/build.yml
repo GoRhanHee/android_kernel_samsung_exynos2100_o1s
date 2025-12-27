@@ -35,7 +35,9 @@ jobs:
         path: |
           ./prebuilts/Galaxy S21 KernelSU.tar
           ./prebuilts/boot.img
+          ./prebuilts/recovery.img
           ./prebuilts/vendor_boot.img
+          ./prebuilts/vbmeta.img
 
     - name: Upload Artifacts Kernel OutPut File
       uses: actions/upload-artifact@v4
