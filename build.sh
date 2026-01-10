@@ -11,8 +11,9 @@ git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_a
 git clone https://github.com/UniversalX-devs/prebuilts_clang_host_linux-x86_clang-r383902.git \
  toolchain/clang/host/linux-x86/clang-r383902
 
-# Setting path
+# Setting 
 export ANDROID_BUILD_TOP=$(pwd)
+export RECOVERY=$1
 
 # OEM Setting
 export ARCH=arm64
@@ -37,12 +38,28 @@ CROSS_COMPILE=${GCC_DIR}/bin/aarch64-linux-gnu- \
 O=out
 "
 
-make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+if [ "${RECOVERY}" == "y" ]; then
+    make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config recovery.config || exit 1
+elif [ "${RECOVERY}" == "n" ]; then
+    make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+else
+    echo "Check Compiling Recovery Option"
+    exit 1
+fi
+
 make ${MAKE_ARGS} -j24 || exit 1
 
 # Cooking Kernel module
 export MODULE_DIR=${ANDROID_BUILD_TOP}/out/modules_out
 make ${MAKE_ARGS} -j24 INSTALL_MOD_PATH=${MODULE_DIR} INSTALL_MOD_STRIP=1 modules_install || exit 1
+
+# Cooking dtb.img
+# Idea from @xfwdrev exynos2100 kernel source (https://github.com/xfwdrev/android_kernel_samsung_ex2100/blob/12-upstream/build.sh)
+./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtb.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/exynos2100.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/exynos
+
+# Cooking dtbo.img
+# Idea from @xfwdrev exynos2100 kernel source (https://github.com/xfwdrev/android_kernel_samsung_ex2100/blob/12-upstream/build.sh)
+./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung
 
 # Cooking boot.img
 cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel
@@ -63,13 +80,5 @@ cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot.img
 
 cd ${ANDROID_BUILD_TOP}/prebuilts
 
-# Download fastbootD patched recovery
-RECOVERY_URL="https://github.com/GoRhanHee/android_kernel_samsung_exynos2100_o1s/releases/download/fastbootD/recovery.img"
-RECOVERY_FILE=$(basename "$RECOVERY_URL")
-TARGET_PATH=${ANDROID_BUILD_TOP}/prebuilts/$RECOVERY_FILE
-if [ ! -f "$TARGET_PATH" ]; then
-    wget -q --show-progress --progress=dot:giga -O "$TARGET_PATH" "$RECOVERY_URL"
-fi
-
 # Cooking flashable tar file
-tar -cvf "Galaxy S21 KernelSU.tar" boot.img recovery.img vendor_boot.img vbmeta.img
+tar -cvf "Galaxy S21 KernelSU.tar" boot.img dtbo.img vendor_boot.img vbmeta.img
