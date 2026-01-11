@@ -13,15 +13,7 @@ git clone https://github.com/UniversalX-devs/prebuilts_clang_host_linux-x86_clan
 
 # Setting 
 export ANDROID_BUILD_TOP=$(pwd)
-
-if [ "$1" == "kernelsu" ]; then
-    export COMPILE=k
-elif [ "$1" == "recovery" ]; then
-    export COMPILE=r
-else
-    echo "Check Compiling Option"
-    exit 1
-fi
+export OPTION=$1
 
 # OEM Setting
 export ARCH=arm64
@@ -46,10 +38,12 @@ CROSS_COMPILE=${GCC_DIR}/bin/aarch64-linux-gnu- \
 O=out
 "
 
-if [ "${COMPILE}" == "r" ]; then
-    make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config recovery.config || exit 1
-elif [ "${COMPILE}" == "k" ]; then
+if [ "${OPTION}" == "stock" ]; then
+    make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
+elif [ "${OPTION}" == "kernelsu" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config kernelsu.config || exit 1
+elif [ "${OPTION}" == "recovery " ]; then
+    make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config recovery.config  || exit 1
 fi
 
 make ${MAKE_ARGS} -j24 || exit 1
@@ -58,32 +52,38 @@ make ${MAKE_ARGS} -j24 || exit 1
 export MODULE_DIR=${ANDROID_BUILD_TOP}/out/modules_out
 make ${MAKE_ARGS} -j24 INSTALL_MOD_PATH=${MODULE_DIR} INSTALL_MOD_STRIP=1 modules_install || exit 1
 
+mkdir prebuilts/output
+
 # Cooking dtb.img
 # Idea from @xfwdrev exynos2100 kernel source (https://github.com/xfwdrev/android_kernel_samsung_ex2100/blob/12-upstream/build.sh)
-./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtb.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/exynos2100.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/exynos
+./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/output/dtb.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/exynos2100.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/exynos
 
 # Cooking dtbo.img
 # Idea from @xfwdrev exynos2100 kernel source (https://github.com/xfwdrev/android_kernel_samsung_ex2100/blob/12-upstream/build.sh)
-./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung/o1s
+./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/output/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung/o1s
 
-# Cooking boot.img
-cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel
-cp ${ANDROID_BUILD_TOP}/out/kernel/config_data ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel_configs.txt
-cd prebuilts/boot
-./gradlew pack || exit 1
-cp boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/boot.img
-
-cd ${ANDROID_BUILD_TOP}
-
-# Cooking vendor_boot.img
-mkdir prebuilts/modules
-find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/modules/ \;
-cp ${ANDROID_BUILD_TOP}/prebuilts/modules/* ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot/build/unzip_boot/root/lib/modules/
-cd prebuilts/vendor_boot
-./gradlew pack || exit 1
-cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot.img
-
-cd ${ANDROID_BUILD_TOP}/prebuilts
-
-# Cooking flashable tar file
-tar -cvf "Galaxy S21 KernelSU.tar" boot.img dtbo.img vendor_boot.img vbmeta.img
+# Cooking flashable file & Finishing job
+# ** Galaxy S21 required cooked vendor_boot.img when we use cooked kernel, So this script will cook valid boot.img and vendor_boot.img
+# ** 5.4 Kernel is very weird kernel... So, If you watch this scripts, i recommend copy this scripts.. (this scripts from many smart developers..)
+# If this option is "recovery", this script doesnt build boot.img and vendor_boot.img
+if [ "${OPTION}" == "recovery" ]; then
+    mkdir prebuilts/output/modules
+    find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/output/modules/ \;
+    cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/output/kernel
+else
+    # Cooking boot.img
+        cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel
+        cp ${ANDROID_BUILD_TOP}/out/kernel/config_data ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel_configs.txt
+        cd prebuilts/boot && ./gradlew pack || exit 1
+        cp boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/output/boot.img
+        cd ${ANDROID_BUILD_TOP}
+    # Cooking vendor_boot.img
+        mkdir prebuilts/output/modules
+        find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/output/modules/ \;
+        cp ${ANDROID_BUILD_TOP}/prebuilts/output/modules/* ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot/build/unzip_boot/root/lib/modules/
+        cd prebuilts/vendor_boot && ./gradlew pack || exit 1
+        cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/output/vendor_boot.img
+        cd ${ANDROID_BUILD_TOP}/prebuilts/output
+    # Cooking flashable tar file    
+        tar -cvf "Galaxy_S21_${OPTION}.tar" boot.img dtbo.img vendor_boot.img vbmeta.img
+fi

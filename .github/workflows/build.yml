@@ -3,11 +3,12 @@ name: Samsung Galaxy S21 5G Kernel Build
 on:
   workflow_dispatch:
     inputs:
-      Recovery:
+      Option:
         description: 'What do you want compile?'
         required: true
         type: choice
         options:
+          - stock
           - kernelsu
           - recovery  
 
@@ -34,24 +35,18 @@ jobs:
 
     - name: Kernel Build
       run: |   
-        ./build.sh ${{ github.event.inputs.Recovery }}
+        ./build.sh ${{ github.event.inputs.Option }}
 
-    - name: Upload Artifacts Image File
+    - name: Upload Artifacts Kernel File
       uses: actions/upload-artifact@v4
       with:
-        name: "S21_Kernel_Image_File"
+        name: "S21_Kernel_${{ github.event.inputs.Option }}_File"
         path: |
-          ./prebuilts/Galaxy S21 KernelSU.tar
-          ./prebuilts/boot.img
-          ./prebuilts/dtb.img
-          ./prebuilts/dtbo.img
-          ./prebuilts/vendor_boot.img
-          ./prebuilts/vbmeta.img
+          ./prebuilts/output/*
 
     - name: Upload Artifacts Kernel OutPut File
       uses: actions/upload-artifact@v4
       with:
         name: "S21_Kernel_OUTPUT_File"
         path: |
-          ./out/arch/arm64/boot/*
-          ./out/modules_out/*
+          ./out/*
