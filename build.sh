@@ -59,7 +59,7 @@ make ${MAKE_ARGS} -j24 INSTALL_MOD_PATH=${MODULE_DIR} INSTALL_MOD_STRIP=1 module
 
 # Cooking dtbo.img
 # Idea from @xfwdrev exynos2100 kernel source (https://github.com/xfwdrev/android_kernel_samsung_ex2100/blob/12-upstream/build.sh)
-./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung
+./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung/o1s
 
 # Cooking boot.img
 cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/boot/build/unzip_boot/kernel
