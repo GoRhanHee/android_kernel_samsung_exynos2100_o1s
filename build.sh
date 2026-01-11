@@ -13,7 +13,15 @@ git clone https://github.com/UniversalX-devs/prebuilts_clang_host_linux-x86_clan
 
 # Setting 
 export ANDROID_BUILD_TOP=$(pwd)
-export RECOVERY=$1
+
+if [ "$1" == "kernelsu" ]; then
+    export COMPILE=k
+elif [ "$1" == "recovery" ]; then
+    export COMPILE=r
+else
+    echo "Check Compiling Option"
+    exit 1
+fi
 
 # OEM Setting
 export ARCH=arm64
@@ -38,13 +46,10 @@ CROSS_COMPILE=${GCC_DIR}/bin/aarch64-linux-gnu- \
 O=out
 "
 
-if [ "${RECOVERY}" == "y" ]; then
+if [ "${COMPILE}" == "r" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config recovery.config || exit 1
-elif [ "${RECOVERY}" == "n" ]; then
+elif [ "${COMPILE}" == "k" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config kernelsu.config || exit 1
-else
-    echo "Check Compiling Recovery Option"
-    exit 1
 fi
 
 make ${MAKE_ARGS} -j24 || exit 1

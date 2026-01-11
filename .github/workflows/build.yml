@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       Recovery:
-        description: 'Do you want to compile recovery?'
+        description: 'What do you want compile?'
         required: true
         type: choice
         options:
-          - y
-          - n  
+          - kernelsu
+          - recovery  
 
 jobs:
   build:
