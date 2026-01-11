@@ -42,7 +42,7 @@ if [ "${OPTION}" == "stock" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config || exit 1
 elif [ "${OPTION}" == "kernelsu" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config kernelsu.config || exit 1
-elif [ "${OPTION}" == "recovery " ]; then
+elif [ "${OPTION}" == "recovery" ]; then
     make ${MAKE_ARGS} -j24 exynos2100-o1sksx_defconfig gorhanhee.config recovery.config  || exit 1
 fi
 
