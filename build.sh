@@ -84,6 +84,7 @@ else
         cd prebuilts/vendor_boot && ./gradlew pack || exit 1
         cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/output/vendor_boot.img
         cd ${ANDROID_BUILD_TOP}/prebuilts/output
-    # Cooking flashable tar file    
+    # Cooking flashable tar file   
+        cp ${ANDROID_BUILD_TOP}/prebuilts/vbmeta.img ${ANDROID_BUILD_TOP}/prebuilts/output/vbmeta.img     
         tar -cvf "Galaxy_S21_${OPTION}.tar" boot.img dtbo.img vendor_boot.img vbmeta.img
 fi
