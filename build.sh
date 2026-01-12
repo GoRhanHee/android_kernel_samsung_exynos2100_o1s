@@ -63,12 +63,13 @@ mkdir prebuilts/output
 ./prebuilts/mkdtimg cfg_create ${ANDROID_BUILD_TOP}/prebuilts/output/dtbo.img ${ANDROID_BUILD_TOP}/prebuilts/dt_configs/o1s.cfg -d ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/dts/samsung/o1s
 
 # Cooking flashable file & Finishing job
-# ** Galaxy S21 required cooked vendor_boot.img when we use cooked kernel, So this script will cook valid boot.img and vendor_boot.img
+# ** Galaxy S21 Series require cooked vendor_boot.img when we use cooked kernel, So this script will cook valid boot.img and vendor_boot.img
 # ** 5.4 Kernel is very weird kernel... So, If you watch this scripts, i recommend copy this scripts.. (this scripts from many smart developers..)
-# If this option is "recovery", this script doesnt build boot.img and vendor_boot.img
+# If this option is "recovery", this script doesnt cook boot.img and vendor_boot.img
 if [ "${OPTION}" == "recovery" ]; then
     mkdir prebuilts/output/modules
     find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/output/modules/ \;
+    find out/modules_out/ -name "modules.*" -exec cp {} prebuilts/output/modules/ \;
     cp ${ANDROID_BUILD_TOP}/out/arch/arm64/boot/Image ${ANDROID_BUILD_TOP}/prebuilts/output/kernel
 else
     # Cooking boot.img
@@ -80,6 +81,7 @@ else
     # Cooking vendor_boot.img
         mkdir prebuilts/output/modules
         find out/modules_out/ -name "*.ko" -exec cp {} prebuilts/output/modules/ \;
+        find out/modules_out/ -name "modules.*" -exec cp {} prebuilts/output/modules/ \;
         cp ${ANDROID_BUILD_TOP}/prebuilts/output/modules/* ${ANDROID_BUILD_TOP}/prebuilts/vendor_boot/build/unzip_boot/root/lib/modules/
         cd prebuilts/vendor_boot && ./gradlew pack || exit 1
         cp vendor_boot.img.signed ${ANDROID_BUILD_TOP}/prebuilts/output/vendor_boot.img
