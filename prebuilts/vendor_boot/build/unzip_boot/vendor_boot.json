@@ -1,10 +1,10 @@
 {
   "info" : {
-    "input" : "/home/test1/exynos2100/prebuilts/vendor_boot/vendor_boot.img",
+    "input" : "/home/gorhanhee/android_kernel_samsung_exynos2100_o1s/prebuilts/vendor_boot/vendor_boot.img",
     "role" : "vendor_boot.img",
     "json" : "vendor_boot.json",
     "headerVersion" : 3,
-    "product" : "SRPTI16A011KU",
+    "product" : "SRPTI16A012KU",
     "headerSize" : 2112,
     "pageSize" : 4096,
     "cmdline" : "androidboot.selinux=permissive loop.max_part=7",
@@ -15,7 +15,7 @@
   "ramdisk" : {
     "file" : "build/unzip_boot/ramdisk.img.gz",
     "position" : 4096,
-    "size" : 11224155,
+    "size" : 11224130,
     "loadAddr" : 2214592512,
     "xzFlags" : null
   },

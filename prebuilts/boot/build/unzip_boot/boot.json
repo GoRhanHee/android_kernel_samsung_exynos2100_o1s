@@ -1,6 +1,6 @@
 {
   "info" : {
-    "input" : "/home/test1/exynos2100/prebuilts/boot/boot.img",
+    "input" : "/home/gorhanhee/android_kernel_samsung_exynos2100_o1s/prebuilts/boot/boot.img",
     "role" : "boot.img",
     "json" : "boot.json",
     "headerVersion" : 3,
@@ -8,7 +8,7 @@
     "pageSize" : 4096,
     "cmdline" : "androidboot.selinux=permissive loop.max_part=7",
     "osVersion" : "11.0.0",
-    "osPatchLevel" : "2025-11-00",
+    "osPatchLevel" : "2026-01-00",
     "imageSize" : 67108864,
     "signatureSize" : 0
   },
